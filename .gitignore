@@ -1,0 +1,28 @@
+# Arquivos específicos do Vite
+.vite
+
+# Arquivos específicos do Node.js
+node_modules/
+package-lock.json
+yarn.lock
+
+# Variáveis de ambiente e arquivos de configuração
+.env.local
+.env.development
+.env.production
+.env.test
+.env
+.vite.env.d.ts
+
+# Arquivos de build
+/dist/
+/build/
+
+# Outros
+.DS_Store
+.env.local
+.env.*.local
+
+# Arquivos de configuração para editores
+.vscode/
+.idea/
