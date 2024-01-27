@@ -13,6 +13,7 @@ yarn.lock
 .env.test
 .env
 .vite.env.d.ts
+vite.env.d.ts
 
 # Arquivos de build
 /dist/
