@@ -53,11 +53,11 @@ const LoginForm = () => {
           </a>
         </div>
         {isRegister ? (
-          <button className="bg-blue-500 w-5/6 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+          <button className=" font-bold bg-blue-500 w-5/6 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
             Registrar
           </button>
         ) : (
-          <button className="bg-blue-500 w-5/6 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+          <button className="font-bold bg-blue-500 w-5/6 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
             Entrar
           </button>
         )}
