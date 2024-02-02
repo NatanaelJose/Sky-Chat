@@ -1,10 +1,14 @@
+import { BrowserRouter as  Router, Route, Routes} from 'react-router-dom';
+import Home from './components/Home.tsx'
 
-const MyComponent = () => {
+const App = () => {
   return (
-    <div className="bg-blue-500 text-white p-4">
-      Este é um componente React com estilos do Tailwind CSS!
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 };
 
-export default MyComponent;
+export default App;
