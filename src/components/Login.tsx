@@ -44,7 +44,7 @@ const Login: React.FC = () => {
   return (
     <div className="w-full h-screen bg-gray-950 flex flex-row justify-center items-center">
       {isEmail ? (
-        <LoginForm onBackButtonClick={handleBackButtonClick} />
+        <LoginForm onBackButtonClick={handleBackButtonClick}/>
         ) : (
         <div className="w-2/5 h-4/5 flex flex-col justify-center items-center">
           <h2 className="dark:text-white text-xl mb-3">

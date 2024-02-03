@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { addDoc, collection, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore';
-import {  db } from './services/firebaseConfig';
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
+import { db } from './services/firebaseConfig';
 
 interface Message {
   id: string;
@@ -14,13 +14,13 @@ const ChatMessage = (props: any) => {
 };
 
 const Chat = (props: any) => {
-  const { room, user } = props;
+  const { user } = props;
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const messageRef = collection(db, 'globalMessages');
 
   useEffect(() => {
-    const queryMessages = query(messageRef, where('room', '==', room));
+    const queryMessages = query(messageRef, orderBy("createdAt"));
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let newMessages: Message[] = [];
       snapshot.forEach((doc) => {
@@ -31,7 +31,7 @@ const Chat = (props: any) => {
     });
 
     return () => unsubscribe();
-  }, [room]);
+  }, []);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -45,25 +45,24 @@ const Chat = (props: any) => {
       text: newMessage,
       createdAt: serverTimestamp(),
       user: user.displayName,
-      room: 1,
     });
 
     setNewMessage("");
   };
 
   return (
-    <div className="w-full h-auto h-min-screen overflow-y-scroll dark:bg-gray-950">
-      <div className="p-2 flex flex-col">
+    <div className="w-full h-screen flex flex-col dark:bg-gray-950 pb-5">
+      <div className="flex-grow overflow-y-scroll p-2">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} />
         ))}
-        <form onSubmit={handleSubmit}>
-          <input className='pl-2' type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
-          <button type="submit" className='p-3 bg-slate-300'>
-            Send
-          </button>
-        </form>
       </div>
+      <form onSubmit={handleSubmit} className="p-2 flex flex-row justify-center">
+        <input className='pl-2 w-4/5 rounded-xl ' type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+        <button type="submit" className='ml-3 p-3 rounded-2xl text-white bg-blue-800'>
+          Send
+        </button>
+      </form>
     </div>
   );
 };
