@@ -23,6 +23,7 @@ import {
   getRedirectResult,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -86,7 +87,6 @@ const handleEmail = async (userName: string, email: string, password: string, ty
     if (type === "register") {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
       try {
         const userAgent = doc(db, "users", user.uid);
         const docSnap = await getDoc(userAgent);
@@ -101,7 +101,8 @@ const handleEmail = async (userName: string, email: string, password: string, ty
 
       return "Registration successful";
     } else {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       return "Login successful";
     }
   } catch (error:any) {
@@ -128,6 +129,7 @@ async function createUserEmail(name:string) {
         uid: user.uid,
         displayName: name,
         email: user.email,
+        chats: ['global'],
       };
 
       usersCollection = doc(db, "users", user.uid);
@@ -156,6 +158,7 @@ async function createUser() {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
+        chat:["global"]
       };
 
       usersCollection = doc(db, "users", user.uid);
@@ -174,12 +177,14 @@ async function createUser() {
   }
 }
 
+async function searchUser() {
+  
+}
 function isMobileDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
 }
 
-// Messages
 
-export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail};
+export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail, searchUser};

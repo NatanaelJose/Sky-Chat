@@ -7,8 +7,9 @@ import { auth } from './services/firebaseConfig.ts';
 
 const Home = () => {
     const [user, setUser] = useState(auth.currentUser);
+    const [userData, setUserData] = useState();
+
     const [isSelected, setIsSelected] = useState(1);
-    const [room, setRoom] = useState(1);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((newUser) => {
@@ -20,26 +21,31 @@ const Home = () => {
         };
     }, []);
 
+    useEffect(() => {
+        console.log(auth.currentUser)
+        setUser(auth.currentUser);
+    }, [auth.currentUser]);
+
     const backGroundOnClick = (select: number): void => {
         setIsSelected(select);
     }
 
     const handleMenus = ()=>{
         if(isSelected==1){
-            return(<div className='flex flex-row w-full h-screen'><Chat room={room} user={user} /></div>)
+            return(<div className='flex flex-row w-full h-screen'><Chat user={user} /></div>)
         }
         else if (isSelected==2){
             return(<div className='flex flex-row w-full h-screen'><Contats /><Chat /></div>)
         }
         return(
-            <div>nada aqui :3</div>
+            <div>nada aqui</div>
         );
     }
+
     return (
         <div className="flex flex-row">
             <NavBar backGroundOnClick={(param:number)=>backGroundOnClick(param)} isSelected={isSelected} />
-            {user ? handleMenus() : <Login/> }
-
+            {user ? handleMenus() : <Login/>}
         </div>
     );
 };
