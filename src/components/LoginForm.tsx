@@ -4,6 +4,7 @@ import { handleEmail } from "./services/firebaseConfig";
 const LoginForm = ({ onBackButtonClick }: any) => {
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
+    userName: "",
     email: "",
     password: "",
   });
@@ -22,8 +23,9 @@ const LoginForm = ({ onBackButtonClick }: any) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const { email, password } = formData;
+    const { userName, email, password } = formData;
     const result = await handleEmail(
+      userName,
       email,
       password,
       isRegister ? "register" : "login"
@@ -34,13 +36,14 @@ const LoginForm = ({ onBackButtonClick }: any) => {
       console.error(result);
     }
     setFormData({
+      userName: "",
       email: "",
       password: "",
     });
   };
-  
+
   return (
-    <div className="w-1/6 md:w-2/5 lg:w-1/3 h-96 mx-auto flex flex-col justify-around items-center bg-gray-800 rounded-2xl p-6">
+    <div className="w-1/6 md:w-2/5 lg:w-1/3 h-auto mx-auto flex flex-col justify-around items-center bg-gray-800 rounded-2xl p-6">
       <p className="dark:text-white text-2xl mb-4">
         {isRegister
           ? "Registre-se para acessar nosso site!"
@@ -51,6 +54,23 @@ const LoginForm = ({ onBackButtonClick }: any) => {
         className="flex flex-col w-full justify-center items-center"
         onSubmit={handleSubmit}
       >
+        {isRegister ? (
+        <div className="w-5/6 mb-6">
+        <label htmlFor="userName" className="dark:text-white font-semibold">
+           Nome:
+        </label>
+        <input
+          className="w-full mt-1 rounded-md h-7 pl-2"
+          type="text"
+          name="userName"
+          id="userName"
+          value={formData.userName}
+          onChange={handleInputChange}
+        />
+      </div>
+        ) : (
+          ""
+        )}
         <div className="w-5/6 mb-6">
           <label htmlFor="email" className="dark:text-white font-semibold">
             Email:

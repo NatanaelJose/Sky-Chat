@@ -6,7 +6,7 @@ const NavBar = ({backGroundOnClick, isSelected}:any) => {
   const user = auth.currentUser;
 
   return (
-    <div className="fixed w-20 h-screen flex flex-col justify-center bg-gray-800">
+    <div className="w-20 h-screen flex flex-col justify-center bg-gray-800">
       <div className="h-1/2 w-full flex flex-col items-center justify-evenly">
         <div
           className={`${

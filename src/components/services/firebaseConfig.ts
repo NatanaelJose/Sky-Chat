@@ -8,6 +8,8 @@ import {
   doc,
   addDoc,
   setDoc,
+  query,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   User,
@@ -21,7 +23,6 @@ import {
   getRedirectResult,
   signInWithEmailAndPassword,
   signOut,
-  FirebaseError,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -39,12 +40,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
-//messages
-const messagesGlobal = async() => {
-  try{
-    const messageRef =
-  }catch{}
-}
 // Google Auth
 const provider = new GoogleAuthProvider();
 const auth: Auth = getAuth(app);
@@ -86,7 +81,7 @@ async function handleGoogleSignIn() {
   }
 }
 
-const handleEmail = async (email: string, password: string, type: string): Promise<string | null> => {
+const handleEmail = async (userName: string, email: string, password: string, type: string): Promise<string | null> => {
   try {
     if (type === "register") {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -97,7 +92,7 @@ const handleEmail = async (email: string, password: string, type: string): Promi
         const docSnap = await getDoc(userAgent);
 
         if (!docSnap.exists()) {
-          await createUser();
+          await createUserEmail(userName);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -109,7 +104,7 @@ const handleEmail = async (email: string, password: string, type: string): Promi
       await signInWithEmailAndPassword(auth, email, password);
       return "Login successful";
     }
-  } catch (error:FirebaseError) {
+  } catch (error:any) {
     const errorCode = error.code;
     const errorMessage = error.message;
 
@@ -122,6 +117,34 @@ const handleEmail = async (email: string, password: string, type: string): Promi
     }
   }
 };
+
+async function createUserEmail(name:string) {
+  try {
+    const user: User | null = getAuth().currentUser;
+    let userData;
+    let usersCollection;
+    if (user !== null) {
+      userData = {
+        uid: user.uid,
+        displayName: name,
+        email: user.email,
+      };
+
+      usersCollection = doc(db, "users", user.uid);
+
+      setDoc(usersCollection, userData)
+        .then(() => {
+          console.log("Documento adicionado com sucesso!");
+        })
+        .catch((error) => {
+          console.error("Erro ao adicionar documento:", error);
+        });
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+}
 
 async function createUser() {
   try {
@@ -157,4 +180,6 @@ function isMobileDevice() {
   );
 }
 
-export { auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail};
+// Messages
+
+export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail};

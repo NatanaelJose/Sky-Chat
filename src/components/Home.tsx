@@ -8,6 +8,7 @@ import { auth } from './services/firebaseConfig.ts';
 const Home = () => {
     const [user, setUser] = useState(auth.currentUser);
     const [isSelected, setIsSelected] = useState(1);
+    const [room, setRoom] = useState(1);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((newUser) => {
@@ -25,7 +26,7 @@ const Home = () => {
 
     const handleMenus = ()=>{
         if(isSelected==1){
-            return(<div className='flex flex-row w-full h-screen'><Chat /></div>)
+            return(<div className='flex flex-row w-full h-screen'><Chat room={room} user={user} /></div>)
         }
         else if (isSelected==2){
             return(<div className='flex flex-row w-full h-screen'><Contats /><Chat /></div>)
