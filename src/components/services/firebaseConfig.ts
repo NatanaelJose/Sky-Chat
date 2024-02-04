@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+
 import {
   getFirestore,
   collection,
@@ -37,7 +37,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const analytics = getAnalytics(app);
 
 // Google Auth
 const provider = new GoogleAuthProvider();
@@ -63,6 +62,7 @@ async function handleGoogleSignIn() {
     if (result != null) {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token: string | null = credential?.accessToken || null;
+      console.log(token)
       const user = result.user;
       try {
         const userAgent = doc(db, "users", user.uid);
@@ -100,6 +100,7 @@ const handleEmail = async (userName: string, email: string, password: string, ty
     } else {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log(user)
       return "Login successful";
     }
   } catch (error:any) {
@@ -204,3 +205,4 @@ function isMobileDevice() {
 
 
 export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail, searchUser};
+export type FirebaseUser = import("firebase/auth").User;

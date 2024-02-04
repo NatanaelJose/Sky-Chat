@@ -3,7 +3,7 @@ import Chat from "./Chat";
 import { useEffect, useState } from "react";
 import { auth } from "./services/firebaseConfig";
 import { useNavigate } from 'react-router-dom';
-import {searchUser} from "./services/firebaseConfig";
+import { searchUser, FirebaseUser } from "./services/firebaseConfig";
 
 interface User {
   uid: string;
@@ -11,10 +11,10 @@ interface User {
 }
 
 const Global = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userData, setUserData] = useState<User | null>(null);
   const navigate = useNavigate();
-
+    console.log(user);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,7 +24,7 @@ const Global = () => {
         } else {
           setUser(userAuth);
           const userData = await searchUser(userAuth.uid);
-          setUserData(userData);
+          setUserData(userData as User);
         }
       } catch (error) {
         console.error('Erro ao buscar dados do usuário:', error);
@@ -40,8 +40,8 @@ const Global = () => {
     return () => unsubscribe();
   }, [navigate]);
 
+  console.log(userData);
 
-console.log(userData)
   return (
     <div className="flex flex-row">
       <NavBar isSelected={1} />
