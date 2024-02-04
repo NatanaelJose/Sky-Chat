@@ -2,7 +2,7 @@ import {auth} from './services/firebaseConfig'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProfilePic } from './Profile';
 
-const NavBar = ({backGroundOnClick, isSelected}:any) => {
+const NavBar = ({isSelected}:any) => {
   const user = auth.currentUser;
 
   return (
@@ -12,7 +12,6 @@ const NavBar = ({backGroundOnClick, isSelected}:any) => {
           className={`${
             isSelected === 1 ? "bg-gray-950" : ""
           } h-12 w-12 p-3 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center rounded-xl cursor-pointer`}
-          onClick={()=> backGroundOnClick(1)}
         >
           <FontAwesomeIcon
             icon="home"
@@ -23,7 +22,6 @@ const NavBar = ({backGroundOnClick, isSelected}:any) => {
           className={`${
             isSelected === 2 ? "bg-gray-950" : ""
           } p-3 rounded-xl h-12 w-12 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer`}
-          onClick={()=> backGroundOnClick(2)}
         >
           <FontAwesomeIcon
             icon="comment"
@@ -34,7 +32,6 @@ const NavBar = ({backGroundOnClick, isSelected}:any) => {
           className={`${
             isSelected === 3 ? "bg-gray-950" : ""
           } p-3 rounded-xl h-12 w-12 transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer`}
-          onClick={()=> backGroundOnClick(3)}
         >
           <FontAwesomeIcon
             icon="cog"

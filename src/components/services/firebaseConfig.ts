@@ -10,6 +10,7 @@ import {
   setDoc,
   query,
   onSnapshot,
+  where,
 } from "firebase/firestore";
 import {
   User,
@@ -25,6 +26,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -48,7 +50,6 @@ const auth: Auth = getAuth(app);
 const signOutGoogleAccount = async () => {
   try {
     await signOut(auth);
-
   } catch (error) {
     console.error("Erro ao fazer logout:", error);
   }
@@ -130,6 +131,7 @@ async function createUserEmail(name:string) {
         displayName: name,
         email: user.email,
         chats: ['global'],
+        imageSrc: '',
       };
 
       usersCollection = doc(db, "users", user.uid);
@@ -158,7 +160,8 @@ async function createUser() {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        chat:["global"]
+        chat:["global"],
+        imageSrc:user.photoURL,
       };
 
       usersCollection = doc(db, "users", user.uid);
@@ -177,9 +180,26 @@ async function createUser() {
   }
 }
 
-async function searchUser() {
-  
+async function searchUser(uid:any) {
+  try {
+    const userRef = collection(db, 'users');
+    const userQuery = query(userRef, where('uid', '==', uid));
+
+    const querySnapshot = await getDocs(userQuery);
+
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      return userData;
+    } else {
+      console.log('Usuário não encontrado');
+      return null;
+    }
+  } catch (error) {
+    console.error('Erro ao buscar dados do usuário:', error);
+    throw error;
+  }
 }
+
 function isMobileDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
