@@ -4,7 +4,7 @@ import { signOutGoogleAccount } from "./services/firebaseConfig";
 
 export const ProfilePic = () => {
   const [menuVisible, setMenuVisible] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
