@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
+import { addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp} from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
 
 interface Message {

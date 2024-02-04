@@ -6,10 +6,8 @@ import {
   getDoc,
   getDocs,
   doc,
-  addDoc,
   setDoc,
   query,
-  onSnapshot,
   where,
 } from "firebase/firestore";
 import {
@@ -24,9 +22,7 @@ import {
   getRedirectResult,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
