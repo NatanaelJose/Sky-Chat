@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { handleEmail } from "./services/firebaseConfig";
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onBackButtonClick }: any) => {
   const [isRegister, setIsRegister] = useState(false);
@@ -9,7 +8,6 @@ const LoginForm = ({ onBackButtonClick }: any) => {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
   function handleRegister() {
     setIsRegister((prevIsRegister) => !prevIsRegister);

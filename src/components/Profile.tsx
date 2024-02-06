@@ -33,8 +33,8 @@ export const ProfilePic = () => {
         <FontAwesomeIcon icon="user" className="text-3xl" />
       </div>
       {menuVisible && (
-        <div ref={menuRef} className="absolute bottom-5 mt-1 py-1 w-max bg-white border border-gray-200 rounded-lg shadow-2xl z-20">
-          <div onClick={() => { setMenuVisible(false); signOutGoogleAccount(); }} className="block px-4 py-2 w-24 text-gray-800 hover:bg-gray-100 cursor-pointer">Sair</div>
+        <div ref={menuRef} className="absolute bottom-5 mt-1 py-1 w-max dark:text-white dark:bg-gray-700 border border-blue-500 rounded-lg shadow-2xl z-20">
+          <div onClick={() => { setMenuVisible(false); signOutGoogleAccount(); }} className="block px-4 py-2 w-24 dark:text-white hover:bg-gray-900 cursor-pointer">Sair</div>
         </div>
       )}
     </div>
