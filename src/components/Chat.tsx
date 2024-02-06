@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp} from 'firebase/firestore';
+import { doc, updateDoc, addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
 
 interface Message {
@@ -9,12 +9,91 @@ interface Message {
   imageSrc?: string;
 }
 
-const ChatMessage = (props: any) => {
-  const { text, uid, key, imageSrc } = props.message;
+const updateChatMessage = async (id: string, newText: string) => {
+  try {
+    await updateDoc(doc(db, "globalMessages", id), {
+      text: newText,
+      updatedAt: serverTimestamp()
+    });
+    console.log("Documento atualizado com sucesso!");
+  } catch (error) {
+    console.error("Erro ao atualizar o documento:", error);
+  }
+}
 
-  const messageClass = `flex items-center space-x-3 p-5 mb-5 rounded-3xl ${
-    uid === props.currentUserUid ? 'bg-gray-800 ml-auto self-end' : 'bg-blue-800'
+const deleteChatMessage = async (id: string) => {
+  try {
+    console.log(id)
+    await deleteDoc(doc(db, "globalMessages", id));
+    console.log("Documento excluído com sucesso!");
+  } catch (error) {
+    console.error("Erro ao excluir o documento:", error);
+  }
+}
+
+const ChatMessage = (props: any) => {
+  const { text, uid, key, imageSrc, id } = props.message;
+  const [showOptions, setShowOptions] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState(text);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
+  const messageClass = `flex items-center space-x-3 p-4 mb-5 rounded-3xl ${
+    uid === props.currentUserUid ? 'bg-gray-800 ml-auto self-end' : 'bg-blue-700'
   }`;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuVisible(false);
+      }
+    };
+
+    const isMounted = menuRef.current;
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      if (isMounted) {
+        document.removeEventListener('mousedown', handleClickOutside);
+      }
+    };
+  }, []);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedText(text);
+  };
+
+  const handleSaveEdit = () => {
+    if(editedText == '') return;
+    updateChatMessage(id, editedText);
+    setIsEditing(false);
+  };
+
+  const handleMouseEnter = () => {
+    setShowOptions(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowOptions(false);
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    setMenuPosition({ x: buttonRect.left, y: buttonRect.bottom });
+    toggleMenu();
+  };
+
+  const handleDelete = () => {
+    deleteChatMessage(id);
+  };
 
   return (
     <div className="flex flex-row items-center w-4/6" key={key}>
@@ -25,12 +104,43 @@ const ChatMessage = (props: any) => {
           className="w-8 h-8 rounded-full"
         />
       )}
-      <div className={messageClass}>
-        <p className='text-white break-all' >{text}</p>
+      <div className={messageClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        {isEditing ? (
+          <input
+          className="border dark:text-white bg-gray-800 rounded border-blue-500 focus:outline-none"
+          type="text"
+          value={editedText}
+          onChange={(e) => setEditedText(e.target.value)}
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSaveEdit();
+              setMenuVisible(false);
+            }
+          }}
+        />
+        
+        ) : (
+          <p className='text-white break-all'>{text}</p>
+        )}
+        {uid === props.currentUserUid && showOptions && (
+          <button className="dark:text-white" onClick={handleMenuClick}>⋮</button>
+        )}
+        {menuVisible && (
+          <div ref={menuRef} style={{ position: 'absolute', top: menuPosition.y, left: menuPosition.x }} className="py-1 w-max dark:text-white dark:bg-gray-700 border border-blue-500 rounded-lg shadow-2xl z-20">
+            <div onClick={handleDelete} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900 cursor-pointer">Excluir</div>
+            {!isEditing && (
+              <div onClick={handleEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900  cursor-pointer">Editar</div>
+            )}
+            {isEditing && (
+              <div onClick={handleSaveEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900  cursor-pointer">Salvar</div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
-};
+}
 
 const Chat = (props: any) => {
   const { userData } = props;
@@ -44,7 +154,7 @@ const Chat = (props: any) => {
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
       let newMessages: Message[] = [];
       snapshot.forEach((doc) => {
-        newMessages.unshift({ ...doc.data(), id: doc.id } as Message); 
+        newMessages.unshift({ ...doc.data(), id: doc.id } as Message);
       });
 
       setMessages(newMessages);
@@ -85,23 +195,24 @@ const Chat = (props: any) => {
     <div className="w-full h-screen flex flex-col justify-end dark:bg-gray-950 pb-5">
       <div className="flex flex-col overflow-y-scroll items-center">
         {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} currentUserUid={userData?.uid} imageSrc={msg.imageSrc} />
+          <ChatMessage key={msg.id} message={msg} currentUserUid={userData?.uid} />
         ))}
         <div ref={messagesEndRef} />
       </div>
       <form onSubmit={handleSubmit} className="p-2 flex flex-row justify-center">
-        <input 
-          className='pl-2 w-3/5 rounded-xl' 
-          type="text" 
-          value={newMessage} 
-          onChange={(e) => setNewMessage(e.target.value)} 
+        <input
+          className='pl-2 w-3/5 rounded-xl bg-gray-100 focus:outline-none border-blue-500 border-2'
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Digite sua mensagem..."
         />
-        <button type="submit" className='ml-3 p-3 rounded-2xl text-white bg-blue-800'>
-          Send
+        <button type="submit" className='ml-3 p-3 rounded-2xl text-white bg-blue-700'>
+          Enviar
         </button>
       </form>
     </div>
   );
-};
+}
 
 export default Chat;

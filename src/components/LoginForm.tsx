@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { handleEmail } from "./services/firebaseConfig";
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onBackButtonClick }: any) => {
   const [isRegister, setIsRegister] = useState(false);
@@ -8,6 +9,7 @@ const LoginForm = ({ onBackButtonClick }: any) => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   function handleRegister() {
     setIsRegister((prevIsRegister) => !prevIsRegister);
@@ -43,12 +45,11 @@ const LoginForm = ({ onBackButtonClick }: any) => {
   };
 
   return (
-    <div className="w-1/6 md:w-2/5 lg:w-1/3 h-auto mx-auto flex flex-col justify-around items-center bg-gray-800 rounded-2xl p-6">
+    <div className="w-2/6 md:w-2/5 lg:w-1/3 h-auto mx-auto flex flex-col justify-around items-center bg-gray-800 rounded-2xl p-6">
       <p className="dark:text-white text-2xl mb-4">
         {isRegister
-          ? "Registre-se para acessar nosso site!"
+          ? "Registre-se para acessar nosso Chat!"
           : "Faça seu login para acessar nosso Chat!"}
-        <span className="text-4xl">☁️</span>
       </p>
       <form
         className="flex flex-col w-full justify-center items-center"
@@ -60,7 +61,7 @@ const LoginForm = ({ onBackButtonClick }: any) => {
            Nome:
         </label>
         <input
-          className="w-full mt-1 rounded-md h-7 pl-2"
+          className="w-full mt-1 rounded-md h-7 pl-1 border border-blue-500 focus:outline-none"
           type="text"
           name="userName"
           id="userName"
@@ -76,8 +77,8 @@ const LoginForm = ({ onBackButtonClick }: any) => {
             Email:
           </label>
           <input
-            className="w-full mt-1 rounded-md h-7 pl-2"
-            type="email"
+          className="w-full mt-1 rounded-md h-7 pl-1 border border-blue-500 focus:outline-none"
+          type="email"
             name="email"
             id="email"
             value={formData.email}
@@ -89,8 +90,8 @@ const LoginForm = ({ onBackButtonClick }: any) => {
             Senha:
           </label>
           <input
-            className="w-full mt-1 rounded-md h-7 pl-2"
-            type="password"
+          className="w-full mt-1 rounded-md h-7 pl-1 border border-blue-500 focus:outline-none"
+          type="password"
             name="password"
             id="password"
             value={formData.password}
