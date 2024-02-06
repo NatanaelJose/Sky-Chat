@@ -60,9 +60,7 @@ async function handleGoogleSignIn() {
       result = await signInWithPopup(auth, provider);
     }
     if (result != null) {
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token: string | null = credential?.accessToken || null;
-      console.log(token)
+      GoogleAuthProvider.credentialFromResult(result);
       const user = result.user;
       try {
         const userAgent = doc(db, "users", user.uid);
@@ -98,9 +96,7 @@ const handleEmail = async (userName: string, email: string, password: string, ty
 
       return "Registration successful";
     } else {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log(user)
+      await signInWithEmailAndPassword(auth, email, password);
       return "Login successful";
     }
   } catch (error:any) {
@@ -109,7 +105,7 @@ const handleEmail = async (userName: string, email: string, password: string, ty
 
     if (errorCode === "auth/email-already-in-use") {
       console.error("Email already in use. Please use a different email or try logging in.");
-      return "Email already in use";
+      return "Email já em uso";
     } else {
       console.error(errorMessage);
       return "Unexpected error";

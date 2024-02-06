@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { doc, updateDoc, addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
+import defaultSrc from '../assets/images/default-profile-pic.png';
 
 interface Message {
   id: string;
@@ -96,13 +97,9 @@ const ChatMessage = (props: any) => {
   };
 
   return (
-    <div className="flex flex-row items-center w-4/6" key={key}>
-      {uid !== props.currentUserUid && imageSrc && (
-        <img
-          src={imageSrc}
-          alt="Profile"
-          className="w-8 h-8 rounded-full"
-        />
+    <div className="flex flex-row items-center w-[69%]" key={key}>
+      {uid !== props.currentUserUid && (
+        imageSrc ? <img src={imageSrc} alt="Profile" className="w-8 h-8  mr-2 rounded-full" /> : <img src={defaultSrc} alt="Profile" className="w-8 h-8 mr-2 rounded-full" />
       )}
       <div className={messageClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isEditing ? (
