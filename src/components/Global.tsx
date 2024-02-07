@@ -13,6 +13,7 @@ interface User {
 const Global = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchData = async () => {
       try {

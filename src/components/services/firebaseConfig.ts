@@ -52,6 +52,7 @@ async function handleGoogleSignIn() {
   try {
     let result: UserCredential | null = await signInWithPopup(auth, provider);
     if (result != null) {
+      GoogleAuthProvider.credentialFromResult(result);
       const user = result.user;
       try {
         const userAgent = doc(db, "users", user.uid);
