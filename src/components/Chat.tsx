@@ -45,7 +45,7 @@ const ChatMessage = (props: any) => {
   };
 
   const messageClass = `flex items-center space-x-3 p-4 mb-5 rounded-3xl ${
-    uid === props.currentUserUid ? 'bg-gray-800 ml-auto self-end' : 'bg-blue-700'
+    uid === props.currentUserUid ? 'dark:bg-gray-800 bg-blue-700 ml-auto self-end' : 'dark:bg-blue-700 bg-blue-800'
   }`;
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const ChatMessage = (props: any) => {
       <div className={messageClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isEditing ? (
           <input
-          className="border dark:text-white bg-gray-800 rounded border-blue-500 focus:outline-none"
+          className="border dark:text-white bg-white dark:bg-gray-800 rounded border-blue-500 focus:outline-none"
           type="text"
           value={editedText}
           onChange={(e) => setEditedText(e.target.value)}
@@ -129,16 +129,16 @@ const ChatMessage = (props: any) => {
           <p className='text-white break-all'>{text}</p>
         )}
         {uid === props.currentUserUid && showOptions && (
-          <button className="dark:text-white" onClick={handleMenuClick}>⋮</button>
+          <button className="text-white" onClick={handleMenuClick}>⋮</button>
         )}
         {menuVisible && (
-          <div ref={menuRef} style={{ position: 'absolute', top: menuPosition.y, left: menuPosition.x }} className="py-1 w-max dark:text-white dark:bg-gray-700 border border-blue-500 rounded-lg shadow-2xl z-20">
-            <div onClick={handleDelete} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900 cursor-pointer">Excluir</div>
+          <div ref={menuRef} style={{ position: 'absolute', top: menuPosition.y, left: menuPosition.x }} className="py-1 w-max bg-white dark:text-white dark:bg-gray-700 border border-blue-500 rounded-lg shadow-2xl z-20">
+            <div onClick={handleDelete} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-900 cursor-pointer">Excluir</div>
             {!isEditing && (
-              <div onClick={handleEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900  cursor-pointer">Editar</div>
+              <div onClick={handleEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-900 cursor-pointer">Editar</div>
             )}
             {isEditing && (
-              <div onClick={handleSaveEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-900  cursor-pointer">Salvar</div>
+              <div onClick={handleSaveEdit} className="block px-3 py-2 w-24 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-900 cursor-pointer">Salvar</div>
             )}
           </div>
         )}
@@ -197,8 +197,8 @@ const Chat = (props: any) => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col justify-end dark:bg-gray-950 pb-5">
-      <div className="flex flex-col overflow-y-scroll sm:items-center">
+    <div className="w-full h-screen flex flex-col justify-end bg-slate-200 dark:bg-gray-950 pb-5">
+      <div className="flex flex-col overflow-y-scroll scroll-smooth sm:items-center">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} currentUserUid={userData?.uid} />
         ))}

@@ -3,16 +3,22 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+  --scrollbar-thumb-color-dark: #1e293b;
+  --scrollbar-track-color-dark: #030712;
+  --scrollbar-thumb-color-light: #0369a1 ;
+  --scrollbar-track-color-light: #f3f3f3;
+}
+
 ::-webkit-scrollbar {
-    width: 7px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #1e293b;
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background-color: #030712;
-  }
-  
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color); 
+}
