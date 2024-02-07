@@ -37,9 +37,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
 // Google Auth
-const provider = new GoogleAuthProvider();
 const auth: Auth = getAuth(app);
 
 const signOutGoogleAccount = async () => {
@@ -52,15 +52,8 @@ const signOutGoogleAccount = async () => {
 
 async function handleGoogleSignIn() {
   try {
-    let result: UserCredential | null;
-    if (isMobileDevice()) {
-      await signInWithRedirect(auth, provider);
-      result = await getRedirectResult(auth);
-    } else {
-      result = await signInWithPopup(auth, provider);
-    }
+    let result: UserCredential | null = await signInWithPopup(auth, provider);
     if (result != null) {
-      GoogleAuthProvider.credentialFromResult(result);
       const user = result.user;
       try {
         const userAgent = doc(db, "users", user.uid);
@@ -191,12 +184,6 @@ async function searchUser(uid:any) {
     console.error('Erro ao buscar dados do usuário:', error);
     throw error;
   }
-}
-
-function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
 }
 
 
