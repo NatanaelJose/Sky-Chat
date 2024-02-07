@@ -24,7 +24,6 @@ const updateChatMessage = async (id: string, newText: string) => {
 
 const deleteChatMessage = async (id: string) => {
   try {
-    console.log(id)
     await deleteDoc(doc(db, "globalMessages", id));
     console.log("Documento excluído com sucesso!");
   } catch (error) {
@@ -88,7 +87,16 @@ const ChatMessage = (props: any) => {
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const buttonRect = event.currentTarget.getBoundingClientRect();
-    setMenuPosition({ x: buttonRect.left, y: buttonRect.bottom });
+    let menuX = buttonRect.left;
+    const menuY = buttonRect.bottom;
+    
+    const menuWidth = 150; 
+    const windowWidth = window.innerWidth;
+    if (menuX + menuWidth > windowWidth) {
+      menuX = windowWidth - menuWidth;
+    }
+  
+    setMenuPosition({ x: menuX, y: menuY });
     toggleMenu();
   };
 
@@ -97,9 +105,9 @@ const ChatMessage = (props: any) => {
   };
 
   return (
-    <div className="flex flex-row items-center w-[69%]" key={key}>
+    <div className="flex flex-row items-center w-full sm:w-[69%]" key={key}>
       {uid !== props.currentUserUid && (
-        imageSrc ? <img src={imageSrc} alt="Profile" className="w-8 h-8  mr-2 rounded-full" /> : <img src={defaultSrc} alt="Profile" className="w-8 h-8 mr-2 rounded-full" />
+        imageSrc ? <img src={imageSrc} alt="Profile" className="w-10 h-10 mx-2 rounded-full" /> : <img src={defaultSrc} alt="Profile" className="w-10 h-10 mx-2 rounded-full" />
       )}
       <div className={messageClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {isEditing ? (
@@ -190,7 +198,7 @@ const Chat = (props: any) => {
 
   return (
     <div className="w-full h-screen flex flex-col justify-end dark:bg-gray-950 pb-5">
-      <div className="flex flex-col overflow-y-scroll items-center">
+      <div className="flex flex-col overflow-y-scroll sm:items-center">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} currentUserUid={userData?.uid} />
         ))}
@@ -198,7 +206,7 @@ const Chat = (props: any) => {
       </div>
       <form onSubmit={handleSubmit} className="p-2 flex flex-row justify-center">
         <input
-          className='pl-2 w-3/5 rounded-xl bg-gray-100 focus:outline-none border-blue-500 border-2'
+          className='pl-2 w-full sm:w-3/5 rounded-xl bg-gray-100 focus:outline-none border-blue-500 border-2'
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
