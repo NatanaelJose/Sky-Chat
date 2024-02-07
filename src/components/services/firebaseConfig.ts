@@ -18,8 +18,6 @@ import {
   signInWithPopup,
   Auth,
   UserCredential,
-  signInWithRedirect,
-  getRedirectResult,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
