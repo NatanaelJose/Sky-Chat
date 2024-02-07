@@ -21,7 +21,7 @@ const Config = () => {
         <div className="flex flex-row">
             <NavBar isSelected={3} />
             <div className="w-full h-screen flex flex-col items-center dark:bg-gray-950  bg-gray-200">
-                <div className="w-[96%] h-20 flex flex-row items-center mt-5 p-2 rounded-2xl">
+                <div className="w-[96%] h-20 flex flex-row items-center mt-10 p-2 rounded-2xl">
                   <p className="mr-3 dark:text-white">Trocar de tema: </p>
                   <HandleTheme/>
 

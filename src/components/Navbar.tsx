@@ -21,7 +21,7 @@ const NavBar = ({ isSelected }: any) => {
         className="toggle-nav-button absolute top-0 left-0 sm:hidden m-5"
         onClick={() => setNavVisible(!navVisible)}
       >
-        <FontAwesomeIcon icon="bars" className="text-white text-3xl" />
+        <FontAwesomeIcon icon="bars" className="dark:text-white text-sky-700 text-3xl" />
       </button>
       <div
         className={`${
