@@ -3,9 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProfilePic } from "./Profile";
 import { useState } from "react";
 
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
 const NavBar = ({ isSelected }: any) => {
   const user = auth.currentUser;
-  const [navVisible, setNavVisible] = useState(true);
+
+  const [navVisible, setNavVisible] = isMobileDevice() ? useState(false) : useState(true);
 
   return (
     <div className="relative">
