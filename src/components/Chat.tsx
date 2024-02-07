@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { doc, updateDoc, addDoc, collection, limit, onSnapshot, orderBy, query, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
 import defaultSrc from '../assets/images/default-profile-pic.png';
+import ProfanityFilter from 'bad-words';
 
 interface Message {
   id: string;
@@ -9,6 +10,7 @@ interface Message {
   uid: string;
   imageSrc?: string;
 }
+const profanityFilter = new ProfanityFilter();
 
 const updateChatMessage = async (id: string, newText: string) => {
   try {
@@ -180,21 +182,22 @@ const Chat = (props: any) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!userData) {
-      return;
+        return;
     }
 
     if (newMessage === '') return;
 
+    const cleanedMessage = profanityFilter.clean(newMessage);
     const messageRef = collection(db, 'globalMessages');
     await addDoc(messageRef, {
-      text: newMessage,
-      createdAt: serverTimestamp(),
-      uid: userData.uid,
-      imageSrc: userData.imageSrc,
+        text: cleanedMessage,
+        createdAt: serverTimestamp(),
+        uid: userData.uid,
+        imageSrc: userData.imageSrc,
     });
 
     setNewMessage("");
-  };
+};
 
   return (
     <div className="w-full h-screen flex flex-col justify-end bg-slate-200 dark:bg-gray-950 pb-5">
