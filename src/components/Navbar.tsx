@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const NavBar = ({ isSelected }: any) => {
   const user = auth.currentUser;
-  const [navVisible, setNavVisible] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
 
   return (
     <div className="relative">
