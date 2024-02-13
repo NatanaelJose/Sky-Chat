@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 
 import {
   getFirestore,
+  Firestore,
   collection,
   getDoc,
   getDocs,
@@ -9,6 +10,8 @@ import {
   setDoc,
   query,
   where,
+  updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import {
   User,
@@ -34,7 +37,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db:Firestore = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // Google Auth
@@ -185,6 +188,38 @@ async function searchUser(uid:any) {
   }
 }
 
+const createPrivateChat = async (idAmigo:string, meuId:string) => {
+  const nomeColecao = `new${idAmigo}${meuId}`;
 
-export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail, searchUser};
+  await setDoc(doc(db, nomeColecao, "firstMessage"), {
+    name: "ola, mundo",
+  });
+
+  const userRef = doc(db, "users", meuId);
+  await updateDoc(userRef, {
+    chat: arrayUnion(nomeColecao)
+});
+  return nomeColecao;
+};
+
+const fetchChats = async (setUserChats:any, userId:any) => {
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      setUserChats(docSnap.data().chat)
+    } else {
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.error("Erro ao buscar chats:", error);
+  }
+};
+
+
+
+
+export { db ,  auth, handleGoogleSignIn, signOutGoogleAccount, handleEmail, searchUser, createPrivateChat, fetchChats};
 export type FirebaseUser = import("firebase/auth").User;

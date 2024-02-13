@@ -1,22 +1,15 @@
 import { auth } from "./services/firebaseConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProfilePic } from "./Profile";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
-}
 
-const NavBar = ({ isSelected }: any) => {
+
+const NavBar = ({ isSelected, navVisible, setNavVisible }: any) => {
   const user = auth.currentUser;
 
-  const [navVisible, setNavVisible] = isMobileDevice() ? useState(false) : useState(true);
-
   return (
-    <div className="relative">
+    <div className="relative flex flex-row">
       <button
         className="toggle-nav-button absolute top-0 left-0 sm:hidden m-5"
         onClick={() => setNavVisible(!navVisible)}
@@ -40,6 +33,7 @@ const NavBar = ({ isSelected }: any) => {
               <FontAwesomeIcon icon="home" className="text-white text-3xl" />
             </div>
         </Link>
+        <Link to="/contats">
           <div
             className={`${
               isSelected === 2 ? "dark:bg-gray-950 bg-sky-900" : ""
@@ -49,6 +43,7 @@ const NavBar = ({ isSelected }: any) => {
           >
             <FontAwesomeIcon icon="comment" className="text-white text-3xl" />
           </div>
+        </Link>
           <Link to="/config">
             <div
               className={`${

@@ -10,8 +10,16 @@ interface User {
   email: string;
 }
 
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
 const Global = () => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [navVisible, setNavVisible] = isMobileDevice() ? useState(false) : useState(true);
+
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -40,8 +48,8 @@ const Global = () => {
 
   return (
     <div className="flex flex-row">
-      <NavBar isSelected={1} />
-      <Chat userData={userData} centered={true} />
+        <NavBar isSelected={1} navVisible={navVisible} setNavVisible={setNavVisible} />
+        <Chat userData={userData} />
     </div>
   );
 }
