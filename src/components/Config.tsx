@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../ThemeContext";
 import NavBar from "./Navbar";
 import { searchUser, auth } from "./services/firebaseConfig";
@@ -15,12 +15,6 @@ interface UserData {
   email: string;
   displayName: string;
   imageSrc: string;
-}
-
-function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
 }
 
 const HandleTheme = () => {
