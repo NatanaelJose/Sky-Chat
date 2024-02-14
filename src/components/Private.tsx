@@ -11,12 +11,6 @@ interface User {
   email: string;
 }
 
-function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
-}
-
 const Private = () => {
     const [userData, setUserData] = useState<User | null>(null);
     const [navVisible, setNavVisible] = useState(true);
