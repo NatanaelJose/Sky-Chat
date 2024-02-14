@@ -2,9 +2,20 @@ import { useEffect, useState } from "react";
 import { auth, createPrivateChat } from "./services/firebaseConfig";
 import { fetchChats } from "./services/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import defaultSrc from '../assets/images/default-profile-pic.png';
 
-const ModelContats = ({ chatId }: { chatId: string }) => {
-  return <li key={chatId}>{chatId}</li>;
+interface ChatInfo {
+  amigoNome: string;
+  amigoImg: string;
+}
+
+const ModelContats: React.FC<{ index:number, chatInfo: ChatInfo }> = ({ index, chatInfo} ) => {
+  return (
+    <div className="flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800" key={index}>
+      <img className="h-16 w-16 rounded-full" src={chatInfo.amigoImg?chatInfo.amigoImg:defaultSrc} alt={chatInfo.amigoNome} />
+      <div className="text-center ml-2 break-all">{chatInfo.amigoNome}</div>
+  </div>
+  );
 };
 
 const Contats = ({ navVisible, userData }: any) => {
@@ -52,7 +63,7 @@ const Contats = ({ navVisible, userData }: any) => {
   return (
     <div
       className={`${
-        navVisible ? "w-full md:w-2/6" : ""
+        navVisible ? "w-full md:w-2/6" : "w-0"
       } h-screen bg-slate-200 dark:bg-gray-950`}
     >
       <div className="w-full h-screen bg-blue-400 dark:bg-gray-900 rounded-r-xl">
@@ -63,14 +74,14 @@ const Contats = ({ navVisible, userData }: any) => {
           </h2>
           <ul className="text-white">
             {userChats &&
-              userChats.map((chatId: string) => (
-                <ModelContats key={chatId} chatId={chatId} />
+              userChats.map((chatInfo: any, index: number) => (
+                <ModelContats index={index} chatInfo={chatInfo}/>
               ))}
           </ul>
         </div>
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col w-5/6 mx-auto bg-blue-500 dark:bg-gray-800 p-3 rounded-lg"
+          className="flex flex-col w-5/6 mx-auto bg-blue-500 dark:bg-gray-800 mt-3 p-3 rounded-lg"
         >
           <div className="text-white text-center mb-2 ">
             Adicionar novos amigos

@@ -222,8 +222,6 @@ const createPrivateChat = async (idAmigo: string, meuId: string, setUserChats:an
   return nomeColecao;
 };
 
-
-
 const fetchChats = async (setUserChats: any, userId: any) => {
   try {
     const docRef = doc(db, "users", userId);
@@ -239,13 +237,19 @@ const fetchChats = async (setUserChats: any, userId: any) => {
           const chatSnap = await getDoc(chatRef);
 
           if (chatSnap.exists()) {
-            const idAmigo = chatSnap.data().idAmigo;
+            let id;
+            if(userId == chatSnap.data().idAmigo){
+              id = chatSnap.data().idAuthor;
+            } else {
+              id = chatSnap.data().idAmigo;
+            }
 
-            const amigoData = await searchUser(idAmigo);
+            const amigoData = await searchUser(id);
 
             if (amigoData && amigoData.displayName) {
               const amigoNome = amigoData.displayName;
-              chatUsers.push(amigoNome);
+              const amigoImg = amigoData.imageSrc;
+              chatUsers.push({amigoNome, amigoImg});
             } else {
               console.error("Usuário não encontrado ou sem displayName");
             }
