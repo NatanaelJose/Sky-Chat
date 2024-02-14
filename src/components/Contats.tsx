@@ -3,9 +3,13 @@ import { auth, createPrivateChat } from "./services/firebaseConfig";
 import { fetchChats } from "./services/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 
+const ModelContats = ({ chatId }: { chatId: string }) => {
+  return <li key={chatId}>{chatId}</li>;
+};
+
 const Contats = ({ navVisible, userData }: any) => {
   const [newFriend, setNewFriend] = useState("");
-  const [userChats, setUserChats] = useState([]);
+  const [userChats, setUserChats] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
@@ -14,7 +18,7 @@ const Contats = ({ navVisible, userData }: any) => {
     if (userData.uid === newFriend || newFriend === "") return;
 
     try {
-      await createPrivateChat(newFriend, userData.uid);
+      await createPrivateChat(newFriend, userData.uid, setUserChats);
       setUserChats([...userChats, newFriend]);
       setNewFriend("");
     } catch (error) {
@@ -24,7 +28,6 @@ const Contats = ({ navVisible, userData }: any) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("teste");
       try {
         const currentUser = auth.currentUser;
         if (!currentUser) {
@@ -53,13 +56,16 @@ const Contats = ({ navVisible, userData }: any) => {
       } h-screen bg-slate-200 dark:bg-gray-950`}
     >
       <div className="w-full h-screen bg-blue-400 dark:bg-gray-900 rounded-r-xl">
-        <div className="h-2"></div>
-        <div className="mt-4">
-          <h2 className="text-white text-center">Conversas</h2>
+        <div className="h-1"></div>
+        <div className="mt-2">
+          <h2 className="text-white text-xl font-bold text-center">
+            Conversas
+          </h2>
           <ul className="text-white">
-            {userChats.map((chatId: string) => (
-              <li key={chatId}>{chatId}</li>
-            ))}
+            {userChats &&
+              userChats.map((chatId: string) => (
+                <ModelContats key={chatId} chatId={chatId} />
+              ))}
           </ul>
         </div>
         <form

@@ -118,7 +118,7 @@ async function createUserEmail(name:string) {
         uid: user.uid,
         displayName: name,
         email: user.email,
-        chats: ['global'],
+        chats: [''],
         imageSrc: '',
       };
 
@@ -148,7 +148,7 @@ async function createUser() {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        chat:["global"],
+        chats:[""],
         imageSrc:user.photoURL,
       };
 
@@ -188,28 +188,76 @@ async function searchUser(uid:any) {
   }
 }
 
-const createPrivateChat = async (idAmigo:string, meuId:string) => {
-  const nomeColecao = `new${idAmigo}${meuId}`;
+const createPrivateChat = async (idAmigo: string, meuId: string, setUserChats:any) => {
+  const nomeColecao = `${idAmigo}${meuId}`;
+  const Amigo = await searchUser(idAmigo);
+  if (Amigo) {
+    await setDoc(doc(db, nomeColecao, "firstMessage"), {
+      text: "ola, mundo",
+    });
+    
+    await setDoc(doc(db, 'Chats', nomeColecao), {
+      idAuthor: meuId,
+      idAmigo: idAmigo,
+      friendVerified: false,
+    });
 
-  await setDoc(doc(db, nomeColecao, "firstMessage"), {
-    name: "ola, mundo",
-  });
+    const userRef = doc(db, "users", meuId);
+    await updateDoc(userRef, {
+      chats: arrayUnion(nomeColecao),
+    });
 
-  const userRef = doc(db, "users", meuId);
-  await updateDoc(userRef, {
-    chat: arrayUnion(nomeColecao)
-});
+    const friendUserRef = doc(db, "users", idAmigo);
+    await updateDoc(friendUserRef, {
+      chats: arrayUnion(nomeColecao),
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    fetchChats(setUserChats, meuId);
+  } else {
+    console.error("friend not found"); 
+  }
+  
   return nomeColecao;
 };
 
-const fetchChats = async (setUserChats:any, userId:any) => {
+
+
+const fetchChats = async (setUserChats: any, userId: any) => {
   try {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      setUserChats(docSnap.data().chat)
+      const chatData = docSnap.data().chats;
+      if (Array.isArray(chatData)) {
+        const chatUsers = [];
+
+        for (const chatId of chatData) {
+          const chatRef = doc(db, "Chats", chatId);
+          const chatSnap = await getDoc(chatRef);
+
+          if (chatSnap.exists()) {
+            const idAmigo = chatSnap.data().idAmigo;
+
+            const amigoData = await searchUser(idAmigo);
+
+            if (amigoData && amigoData.displayName) {
+              const amigoNome = amigoData.displayName;
+              chatUsers.push(amigoNome);
+            } else {
+              console.error("Usuário não encontrado ou sem displayName");
+            }
+          } else {
+            console.error("Chat não encontrado para o ID:", chatId);
+          }
+        }
+
+        setUserChats(chatUsers);
+      } else {
+        console.log("'chats' property is not an array:", chatData);
+      }
     } else {
       console.log("No such document!");
     }
