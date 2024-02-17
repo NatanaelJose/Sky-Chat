@@ -16,7 +16,7 @@ const ModelContats: React.FC<{ index:number, chatInfo: ChatInfo, setChat:any }> 
   };
   
   return (
-    <li onClick={handleChatClick} className="flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800 hover:bg-gray-700 transition duration-400 cursor-pointer " key={index}>
+    <li onClick={handleChatClick} className="flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800 hover:bg-sky-600 dark:hover:bg-gray-700 transition duration-400 cursor-pointer " key={index}>
       <img className="h-14 w-14 rounded-full" src={chatInfo.amigoImg ? chatInfo.amigoImg : defaultSrc} alt={chatInfo.amigoNome} />
       <div className="text-center ml-2 break-all">{chatInfo.amigoNome}</div>
     </li>
