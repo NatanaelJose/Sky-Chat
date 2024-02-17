@@ -118,7 +118,7 @@ async function createUserEmail(name:string) {
         uid: user.uid,
         displayName: name,
         email: user.email,
-        chats: [''],
+        chats: [],
         imageSrc: '',
       };
 
@@ -148,7 +148,7 @@ async function createUser() {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        chats:[""],
+        chats:[],
         imageSrc:user.photoURL,
       };
 
