@@ -207,12 +207,28 @@ const Chat = (props: any) => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  let chatRoom: string;
-  if(chat != ''){
-    chatRoom = chat;
-  } else {
-    chatRoom = 'globalMessages'
-  }
+  let chatRoom = chat;
+
+  useEffect(() => {
+    const messageRef = collection(db, chatRoom);
+    const queryMessages = query(
+      messageRef,
+      orderBy("createdAt", "desc"),
+      limit(25)
+    );
+    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
+      let newMessages: Message[] = [];
+      snapshot.forEach((doc) => {
+        newMessages.unshift({ ...doc.data(), id: doc.id } as Message);
+      });
+  
+      setMessages(newMessages);
+      scrollToBottom();
+    });
+  
+    return () => unsubscribe();
+  }, [chat]);
+  
   useEffect(() => {
     const messageRef = collection(db, chatRoom);
     const queryMessages = query(

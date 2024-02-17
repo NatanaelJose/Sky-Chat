@@ -14,7 +14,7 @@ interface User {
 const Private = () => {
     const [userData, setUserData] = useState<User | null>(null);
     const [navVisible, setNavVisible] = useState(true);
-    const [chat, setChat] = useState('');
+    const [chat, setChat] = useState('globalMessages');
 
     const navigate = useNavigate();
     

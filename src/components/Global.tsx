@@ -49,7 +49,7 @@ const Global = () => {
   return (
     <div className="flex flex-row">
         <NavBar isSelected={1} navVisible={navVisible} setNavVisible={setNavVisible} />
-        <Chat userData={userData} chat={''} />
+        <Chat userData={userData} chat={'globalMessages'} />
     </div>
   );
 }
