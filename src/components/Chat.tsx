@@ -23,9 +23,9 @@ interface Message {
 }
 const profanityFilter = new ProfanityFilter();
 
-const updateChatMessage = async (id: string, newText: string) => {
+const updateChatMessage = async (id: string, newText: string, chatRoom:string) => {
   try {
-    await updateDoc(doc(db, "globalMessages", id), {
+    await updateDoc(doc(db, chatRoom, id), {
       text: newText,
       updatedAt: serverTimestamp(),
     });
@@ -35,9 +35,9 @@ const updateChatMessage = async (id: string, newText: string) => {
   }
 };
 
-const deleteChatMessage = async (id: string) => {
+const deleteChatMessage = async (id: string, chatRoom:string) => {
   try {
-    await deleteDoc(doc(db, "globalMessages", id));
+    await deleteDoc(doc(db, chatRoom, id));
     console.log("Documento excluído com sucesso!");
   } catch (error) {
     console.error("Erro ao excluir o documento:", error);
@@ -45,7 +45,8 @@ const deleteChatMessage = async (id: string) => {
 };
 
 const ChatMessage = (props: any) => {
-  const { text, uid, key, imageSrc, id } = props.message;
+  const { text, uid, key, imageSrc, id} = props.message;
+  const {chatRoom} = props.chat;
   const [showOptions, setShowOptions] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -87,7 +88,7 @@ const ChatMessage = (props: any) => {
 
   const handleSaveEdit = () => {
     if (editedText == "") return;
-    updateChatMessage(id, editedText);
+    updateChatMessage(id, editedText, chatRoom);
     setIsEditing(false);
   };
 
@@ -116,7 +117,7 @@ const ChatMessage = (props: any) => {
   };
 
   const handleDelete = () => {
-    deleteChatMessage(id);
+    deleteChatMessage(id, chatRoom);
   };
 
   return (
@@ -202,13 +203,18 @@ const ChatMessage = (props: any) => {
 };
 
 const Chat = (props: any) => {
-  const { userData } = props;
+  const { userData, chat } = props;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
+  let chatRoom: string;
+  if(chat != ''){
+    chatRoom = chat;
+  } else {
+    chatRoom = 'globalMessages'
+  }
   useEffect(() => {
-    const messageRef = collection(db, "globalMessages");
+    const messageRef = collection(db, chatRoom);
     const queryMessages = query(
       messageRef,
       orderBy("createdAt", "desc"),
@@ -244,7 +250,7 @@ const Chat = (props: any) => {
     if (newMessage === "") return;
 
     const cleanedMessage = profanityFilter.clean(newMessage);
-    const messageRef = collection(db, "globalMessages");
+    const messageRef = collection(db, chatRoom);
     await addDoc(messageRef, {
       text: cleanedMessage,
       createdAt: serverTimestamp(),
@@ -263,6 +269,7 @@ const Chat = (props: any) => {
             key={msg.id}
             message={msg}
             currentUserUid={userData?.uid}
+            chat={chatRoom}
           />
         ))}
         <div ref={messagesEndRef} />

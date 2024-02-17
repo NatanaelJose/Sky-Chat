@@ -249,7 +249,7 @@ const fetchChats = async (setUserChats: any, userId: any) => {
             if (amigoData && amigoData.displayName) {
               const amigoNome = amigoData.displayName;
               const amigoImg = amigoData.imageSrc;
-              chatUsers.push({amigoNome, amigoImg});
+              chatUsers.push({amigoNome, amigoImg, chatId});
             } else {
               console.error("Usuário não encontrado ou sem displayName");
             }

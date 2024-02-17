@@ -7,18 +7,19 @@ import defaultSrc from '../assets/images/default-profile-pic.png';
 interface ChatInfo {
   amigoNome: string;
   amigoImg: string;
+  chatId:string;
 }
 
-const ModelContats: React.FC<{ index:number, chatInfo: ChatInfo }> = ({ index, chatInfo} ) => {
+const ModelContats: React.FC<{ index:number, chatInfo: ChatInfo, setChat:any }> = ({ index, chatInfo, setChat} ) => {
   return (
-    <div className="flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800" key={index}>
-      <img className="h-16 w-16 rounded-full" src={chatInfo.amigoImg?chatInfo.amigoImg:defaultSrc} alt={chatInfo.amigoNome} />
+    <li onClick={()=> setChat(chatInfo.chatId)} className="flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800 hover:bg-gray-700 transition duration-400 cursor-pointer " key={index}>
+      <img className="h-14 w-14 rounded-full" src={chatInfo.amigoImg?chatInfo.amigoImg:defaultSrc} alt={chatInfo.amigoNome} />
       <div className="text-center ml-2 break-all">{chatInfo.amigoNome}</div>
-  </div>
+  </li>
   );
 };
 
-const Contats = ({ navVisible, userData }: any) => {
+const Contats = ({ navVisible, userData, setChat }: any) => {
   const [newFriend, setNewFriend] = useState("");
   const [userChats, setUserChats] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -75,9 +76,10 @@ const Contats = ({ navVisible, userData }: any) => {
           <ul className="text-white">
             {userChats &&
               userChats.map((chatInfo: any, index: number) => (
-                <ModelContats index={index} chatInfo={chatInfo}/>
+                <ModelContats key={chatInfo.chatId} index={index} chatInfo={chatInfo} setChat={setChat} />
               ))}
           </ul>
+
         </div>
         <form
           onSubmit={handleSubmit}

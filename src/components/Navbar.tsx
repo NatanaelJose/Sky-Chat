@@ -11,7 +11,7 @@ const NavBar = ({ isSelected, navVisible, setNavVisible }: any) => {
   return (
     <div className="relative flex flex-row">
       <button
-        className="toggle-nav-button absolute top-0 left-0 sm:hidden m-5"
+        className=" absolute top-0 left-0 sm:hidden m-5"
         onClick={() => setNavVisible(!navVisible)}
       >
         <FontAwesomeIcon icon="bars" className="dark:text-white text-sky-700 text-3xl" />

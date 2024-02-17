@@ -14,6 +14,7 @@ interface User {
 const Private = () => {
     const [userData, setUserData] = useState<User | null>(null);
     const [navVisible, setNavVisible] = useState(true);
+    const [chat, setChat] = useState('');
 
     const navigate = useNavigate();
     
@@ -44,8 +45,8 @@ const Private = () => {
     return (
         <div className="flex flex-row">
         <NavBar isSelected={2} navVisible={navVisible} setNavVisible={setNavVisible} />
-        <Contats navVisible={navVisible} userData={userData}/>
-        <Chat userData={userData} />
+        <Contats navVisible={navVisible} userData={userData} setChat={setChat}/>
+        <Chat userData={userData} chat={chat}/>
       </div>
     );
 }

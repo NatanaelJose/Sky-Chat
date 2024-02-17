@@ -101,6 +101,7 @@ const Config = () => {
           <p className="mr-3 dark:text-white">Trocar de tema: </p>
           <HandleTheme />
         </div>
+
       </div>
     </div>
   );
