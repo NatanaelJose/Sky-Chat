@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { auth } from "./services/firebaseConfig";
 import { useNavigate } from 'react-router-dom';
 import { searchUser } from "./services/firebaseConfig";
-import Contats from "./Contats";
+import Contacts from "./Contacts";
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { isMobile } from 'react-device-detect';
+
+import "./private.css";
 
 interface User {
   uid: string;
@@ -43,12 +47,29 @@ const Private = () => {
     }, [navigate]);
 
     return (
-        <div className="flex flex-row">
+      <div className="flex flex-row">
         <NavBar isSelected={2} navVisible={navVisible} setNavVisible={setNavVisible} />
-        <Contats navVisible={navVisible} userData={userData} chat={chat} setChat={setChat}/>
-        <Chat userData={userData} chat={chat}/>
+        {isMobile ? (
+          <TransitionGroup className="flex-grow flex flex-row">
+            {navVisible ? (
+              <CSSTransition key="contacts" classNames="fade" timeout={300}>
+                <Contacts navVisible={navVisible} userData={userData} chat={chat} setChat={setChat} />
+              </CSSTransition>
+            ) : (
+              <CSSTransition key="chat" classNames="fade" timeout={300}>
+                <Chat userData={userData} chat={chat} />
+              </CSSTransition>
+            )}
+          </TransitionGroup>
+        ) : (
+          <>
+            <Contacts navVisible={navVisible} userData={userData} chat={chat} setChat={setChat} />
+            <Chat userData={userData} chat={chat} />
+          </>
+        )}
       </div>
     );
+    
 }
 
 export default Private;

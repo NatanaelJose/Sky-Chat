@@ -16,7 +16,6 @@ import defaultSrc from "../assets/images/default-profile-pic.png";
 import ProfanityFilter from "bad-words";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "./Chat.css";
-import { faBedPulse } from "@fortawesome/free-solid-svg-icons";
 
 interface Message {
   id: string;
@@ -221,7 +220,6 @@ const ChatMessage = (props: any) => {
 const Chat = (props: any) => {
   const { userData, chat } = props;
   const [newMessage, setNewMessage] = useState("");
-  const [showChat, setShowChat]= useState(false); // Estado para controlar a exibição do chat
 
   const navbar = props.navVisible ? props.navVisible : false;
   const [messages, setMessages] = useState<Message[]>([]);
@@ -278,7 +276,7 @@ const Chat = (props: any) => {
 
   return (
     <div className="flex flex-col h-screen w-full bg-slate-300 dark:bg-gray-950">
-      <div className={`flex flex-col flex-grow w-full overflow-y-scroll scroll-smooth items-center ${showChat ? 'hidden' : 'block'}`}>
+      <div className={`flex flex-col flex-grow w-full overflow-y-scroll scroll-smooth items-center`}>
         <TransitionGroup className="w-full mx-auto flex justify-center flex-col items-center">
           {messages.map((msg) => (
             <CSSTransition key={msg.id} classNames="message" timeout={500}>
@@ -295,7 +293,7 @@ const Chat = (props: any) => {
       </div>
       <form
         onSubmit={handleSubmit}
-        className={`p-2 flex flex-row justify-center ${showChat ? 'hidden' : 'block'}`}
+        className={`p-2 flex flex-row justify-center`}
       >
         <input
           className="pl-2 w-full sm:w-3/5 rounded-xl bg-gray-100 focus:outline-none border-blue-500 border-2"

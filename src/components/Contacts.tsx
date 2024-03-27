@@ -24,7 +24,7 @@ const ModelContats: React.FC<{
     <li
       onClick={handleChatClick}
       className={`flex flex-row w-full h-auto p-3 items-center shadow-sm dark:shadow-gray-800 hover:bg-sky-600 dark:hover:bg-gray-700 transition duration-400 cursor-pointer ${
-        isSelected ? "dark:bg-gray-700 bg-sky-600" : ""
+        isSelected ? "dark:bg-gray-950 bg-sky-600" : ""
       }`}
       key={index}
     >
@@ -38,7 +38,7 @@ const ModelContats: React.FC<{
   );
 };
 
-const Contats = ({ navVisible, userData, chat, setChat }: any) => {
+const Contacts = ({ navVisible, userData, chat, setChat }: any) => {
   const [newFriend, setNewFriend] = useState("");
   const [userChats, setUserChats] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const Contats = ({ navVisible, userData, chat, setChat }: any) => {
         navVisible ? "w-full md:w-2/5" : "w-0"
       } h-screen bg-slate-200 dark:bg-gray-950`}
     >
-      <div className="w-full h-screen bg-blue-400 dark:bg-gray-900 rounded-r-xl p-1">
+      <div className="w-full h-screen bg-blue-400 dark:bg-gray-900 rounded-r-xl">
         <div className="h-1"></div>
         <div className="mt-2">
           <h2 className="text-white text-xl font-bold text-center mb-2">
@@ -124,4 +124,4 @@ const Contats = ({ navVisible, userData, chat, setChat }: any) => {
   );
 };
 
-export default Contats;
+export default Contacts;
