@@ -14,6 +14,9 @@ import {
 import { db } from "./services/firebaseConfig";
 import defaultSrc from "../assets/images/default-profile-pic.png";
 import ProfanityFilter from "bad-words";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import "./Chat.css";
+import { faBedPulse } from "@fortawesome/free-solid-svg-icons";
 
 interface Message {
   id: string;
@@ -21,9 +24,14 @@ interface Message {
   uid: string;
   imageSrc?: string;
 }
+
 const profanityFilter = new ProfanityFilter();
 
-const updateChatMessage = async (id: string, newText: string, chatRoom:string) => {
+const updateChatMessage = async (
+  id: string,
+  newText: string,
+  chatRoom: string
+) => {
   try {
     await updateDoc(doc(db, chatRoom, id), {
       text: newText,
@@ -35,8 +43,13 @@ const updateChatMessage = async (id: string, newText: string, chatRoom:string) =
   }
 };
 
-const deleteChatMessage = async (id: string, chatRoom:string) => {
+const deleteChatMessage = async (id: string, chatRoom: string) => {
   try {
+    if (!id || !chatRoom) {
+      console.error("ID do documento ou sala de bate-papo não especificada.");
+      return;
+    }
+
     await deleteDoc(doc(db, chatRoom, id));
     console.log("Documento excluído com sucesso!");
   } catch (error) {
@@ -45,8 +58,9 @@ const deleteChatMessage = async (id: string, chatRoom:string) => {
 };
 
 const ChatMessage = (props: any) => {
-  const { text, uid, key, imageSrc, id} = props.message;
-  const {chatRoom} = props.chat;
+  const { text, uid, key, imageSrc, id } = props.message;
+  const chatRoom = props.chat;
+  const isNavbarOpen = props.navbar;
   const [showOptions, setShowOptions] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -54,11 +68,12 @@ const ChatMessage = (props: any) => {
   const [editedText, setEditedText] = useState(text);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
 
-  const messageClass = `flex items-center space-x-3 p-4 mb-5 rounded-3xl ${
+  const messageClass = `flex items-center space-x-3 p-4 mb-5 rounded-3xl max-w-[69%] ${
     uid === props.currentUserUid
       ? "dark:bg-gray-800 bg-blue-700 ml-auto self-end"
       : "dark:bg-blue-700 bg-blue-800"
@@ -87,7 +102,7 @@ const ChatMessage = (props: any) => {
   };
 
   const handleSaveEdit = () => {
-    if (editedText == "") return;
+    if (editedText === "") return;
     updateChatMessage(id, editedText, chatRoom);
     setIsEditing(false);
   };
@@ -116,12 +131,12 @@ const ChatMessage = (props: any) => {
     toggleMenu();
   };
 
-  const handleDelete = () => {
-    deleteChatMessage(id, chatRoom);
+  const handleDelete = async () => {
+    await deleteChatMessage(id, chatRoom);
   };
 
   return (
-    <div className="flex flex-row items-center w-full sm:w-[69%]" key={key}>
+    <div className={`flex flex-row items-center w-[95%] sm:w-[69%] ${isNavbarOpen ? 'hidden' : 'block'}`} key={key}>
       {uid !== props.currentUserUid &&
         (imageSrc ? (
           <img
@@ -156,13 +171,14 @@ const ChatMessage = (props: any) => {
             }}
           />
         ) : (
-          <p className="text-white break-all">{text}</p>
+          <p className={`text-white break-all`}>{text}</p>
         )}
         {uid === props.currentUserUid && showOptions && (
           <button className="text-white" onClick={handleMenuClick}>
             ⋮
           </button>
         )}
+
         {menuVisible && (
           <div
             ref={menuRef}
@@ -205,6 +221,9 @@ const ChatMessage = (props: any) => {
 const Chat = (props: any) => {
   const { userData, chat } = props;
   const [newMessage, setNewMessage] = useState("");
+  const [showChat, setShowChat]= useState(false); // Estado para controlar a exibição do chat
+
+  const navbar = props.navVisible ? props.navVisible : false;
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   let chatRoom = chat;
@@ -221,33 +240,13 @@ const Chat = (props: any) => {
       snapshot.forEach((doc) => {
         newMessages.unshift({ ...doc.data(), id: doc.id } as Message);
       });
-  
+
       setMessages(newMessages);
       scrollToBottom();
     });
-  
+
     return () => unsubscribe();
   }, [chat]);
-  
-  useEffect(() => {
-    const messageRef = collection(db, chatRoom);
-    const queryMessages = query(
-      messageRef,
-      orderBy("createdAt", "desc"),
-      limit(25)
-    );
-    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
-      let newMessages: Message[] = [];
-      snapshot.forEach((doc) => {
-        newMessages.unshift({ ...doc.data(), id: doc.id } as Message);
-      });
-
-      setMessages(newMessages);
-      scrollToBottom();
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -278,21 +277,25 @@ const Chat = (props: any) => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-200 dark:bg-gray-950">
-      <div className="flex flex-col flex-grow w-full overflow-y-scroll scroll-smooth items-center">
-        {messages.map((msg) => (
-          <ChatMessage
-            key={msg.id}
-            message={msg}
-            currentUserUid={userData?.uid}
-            chat={chatRoom}
-          />
-        ))}
+    <div className="flex flex-col h-screen w-full bg-slate-300 dark:bg-gray-950">
+      <div className={`flex flex-col flex-grow w-full overflow-y-scroll scroll-smooth items-center ${showChat ? 'hidden' : 'block'}`}>
+        <TransitionGroup className="w-full mx-auto flex justify-center flex-col items-center">
+          {messages.map((msg) => (
+            <CSSTransition key={msg.id} classNames="message" timeout={500}>
+              <ChatMessage
+                message={msg}
+                currentUserUid={userData?.uid}
+                chat={chatRoom}
+                navbar={navbar}
+              />
+            </CSSTransition>
+          ))}
+        </TransitionGroup>
         <div ref={messagesEndRef} />
       </div>
       <form
         onSubmit={handleSubmit}
-        className="p-2 flex flex-row justify-center"
+        className={`p-2 flex flex-row justify-center ${showChat ? 'hidden' : 'block'}`}
       >
         <input
           className="pl-2 w-full sm:w-3/5 rounded-xl bg-gray-100 focus:outline-none border-blue-500 border-2"
@@ -303,7 +306,7 @@ const Chat = (props: any) => {
         />
         <button
           type="submit"
-          className="ml-3 p-3 rounded-2xl text-white bg-blue-700"
+          className="ml-3 p-3 rounded-2xl text-white bg-blue-700 hover:bg-blue-800"
         >
           Enviar
         </button>

@@ -75,15 +75,15 @@ const Config = () => {
   };
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-screen h-screen overflow-hidden">
       <NavBar
         isSelected={3}
         navVisible={navVisible}
         setNavVisible={setNavVisible}
       />
-      <div className="w-full h-screen flex flex-col items-center dark:bg-gray-950 bg-gray-200">
-        <div className="w-full lg:w-2/6  dark:bg-gray-800 bg-slate-300 h-auto lg:h-40 mt-40 lg:mt-2 border shadow-md flex flex-row justify-center">
-          <div className="flex flex-row items-center justify-center">
+      <div className="flex flex-col items-center w-full h-full dark:bg-gray-950 bg-gray-200">
+        <div className="w-full mt-20 lg:w-2/6 md:p-3 lg:mt-2 border shadow-md flex flex-row justify-center dark:bg-gray-800 bg-slate-300">
+          <div className="flex flex-row items-center justify-center ">
             <img
               src={userData?.imageSrc ? userData?.imageSrc : defaultSrc }
               alt={userData?.displayName || ""}
@@ -92,12 +92,14 @@ const Config = () => {
             <div className="text-left">
               <div className="dark:text-white text-xl">{userData?.displayName}</div>
               <div className="dark:text-white mb-1 text-base">{userData?.email}</div>
-              <div onClick={handleCopy} className="dark:text-white text-sm hover:cursor-pointer hover:text-sky-500 hover:underline dark:hover:text-sky-500">{userData?.uid} {copied && <span className="text-green-600 ml-2">Copiado!</span>}</div>
+              <div onClick={handleCopy} className="dark:text-white text-sm hover:cursor-pointer hover:text-sky-500 hover:underline dark:hover:text-sky-500">
+                {userData?.uid} {copied && <span className="text-green-600 ml-2">Copiado!</span>}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="w-full lg:w-[96%] h-20 flex flex-row items-center mt-10 p-2 rounded-2xl">
+        <div className="w-full lg:w-96% h-20 flex flex-row items-center mt-10 p-2 rounded-2xl">
           <p className="mr-3 dark:text-white">Trocar de tema: </p>
           <HandleTheme />
         </div>

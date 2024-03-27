@@ -45,7 +45,7 @@ const Private = () => {
     return (
         <div className="flex flex-row">
         <NavBar isSelected={2} navVisible={navVisible} setNavVisible={setNavVisible} />
-        <Contats navVisible={navVisible} userData={userData} setChat={setChat}/>
+        <Contats navVisible={navVisible} userData={userData} chat={chat} setChat={setChat}/>
         <Chat userData={userData} chat={chat}/>
       </div>
     );

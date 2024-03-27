@@ -11,17 +11,22 @@ const NavBar = ({ isSelected, navVisible, setNavVisible }: any) => {
   return (
     <div className="relative flex flex-row">
       <button
-        className=" absolute top-0 left-0 sm:hidden m-5"
+        className="absolute top-0 left-0 sm:hidden my-7 mx-4"
         onClick={() => setNavVisible(!navVisible)}
       >
-        <FontAwesomeIcon icon="bars" className="dark:text-white text-sky-700 text-3xl" />
+        {navVisible ? (
+          <FontAwesomeIcon icon="arrow-left" className="dark:text-white text-sky-700 text-3xl bg-gray-800 p-3 rounded-xl" />
+        ) : (
+          <FontAwesomeIcon icon="bars" className="dark:text-white text-sky-700 text-3xl bg-gray-800 p-3 rounded-xl" />
+        )}
       </button>
+
       <div
         className={`${
           navVisible ? "w-20" : "w-0"
         } h-screen flex flex-col justify-center dark:bg-gray-800 bg-sky-600 transition-width duration-300 ease-in-out`}
       >
-        <div className="h-5/6 w-full flex flex-col items-center justify-evenly">
+        <div className="h-5/6 w-full mt-7 flex flex-col items-center justify-evenly">
         <Link to="/global">
           <div
               className={`${
