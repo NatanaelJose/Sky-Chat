@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { auth, createPrivateChat } from "./services/firebaseConfig";
+import { auth, createPrivateChat, searchUser } from "./services/firebaseConfig";
 import { fetchChats } from "./services/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import defaultSrc from "../assets/images/default-profile-pic.png";
@@ -15,10 +15,12 @@ const ModelContats: React.FC<{
   chatInfo: ChatInfo;
   selectedChatIndex: string;
   setChat: any;
-}> = ({ index, chatInfo, selectedChatIndex, setChat }) => {
+  setNavVisible: any;
+}> = ({ index, chatInfo, selectedChatIndex, setChat, setNavVisible }) => {
   const isSelected = chatInfo.chatRoom === selectedChatIndex;
   const handleChatClick = () => {
     setChat(chatInfo.chatRoom);
+    setNavVisible(false);
   };
   return (
     <li
@@ -38,24 +40,33 @@ const ModelContats: React.FC<{
   );
 };
 
-const Contacts = ({ navVisible, userData, chat, setChat }: any) => {
+const Contacts = ({ setNavVisible, userData, chat, setChat }: any) => {
   const [newFriend, setNewFriend] = useState("");
   const [userChats, setUserChats] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+  
     if (userData.uid === newFriend || newFriend === "") return;
-
+  
     try {
-      await createPrivateChat(newFriend, userData.uid, setUserChats);
-      setUserChats([...userChats, newFriend]);
-      setNewFriend("");
+      const amigoExiste = await searchUser(newFriend);
+      if (amigoExiste) {
+        const newChatId = await createPrivateChat(newFriend, userData.uid, setUserChats);
+        if (newChatId) {
+          setUserChats(prevChats => [...prevChats, newChatId]);
+          setNewFriend("");
+        }
+      } else {
+        console.error("O amigo não existe.");
+      }
     } catch (error) {
       console.error("Erro ao criar chat privado:", error);
     }
   };
+  
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,9 +93,7 @@ const Contacts = ({ navVisible, userData, chat, setChat }: any) => {
 
   return (
     <div
-      className={`${
-        navVisible ? "w-full md:w-2/5" : "w-0"
-      } h-screen bg-slate-200 dark:bg-gray-950`}
+      className={`w-full md:w-2/5 h-screen bg-slate-200 dark:bg-gray-950`}
     >
       <div className="w-full h-screen bg-blue-400 dark:bg-gray-900 rounded-r-xl">
         <div className="h-1"></div>
@@ -101,6 +110,7 @@ const Contacts = ({ navVisible, userData, chat, setChat }: any) => {
                   chatInfo={chatInfo}
                   selectedChatIndex={chat}
                   setChat={setChat}
+                  setNavVisible={setNavVisible}
                 />
               ))}
           </ul>

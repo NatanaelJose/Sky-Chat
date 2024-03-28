@@ -53,7 +53,7 @@ const Private = () => {
           <TransitionGroup className="flex-grow flex flex-row">
             {navVisible ? (
               <CSSTransition key="contacts" classNames="fade" timeout={300}>
-                <Contacts navVisible={navVisible} userData={userData} chat={chat} setChat={setChat} />
+                <Contacts setNavVisible={setNavVisible} userData={userData} chat={chat} setChat={setChat} />
               </CSSTransition>
             ) : (
               <CSSTransition key="chat" classNames="fade" timeout={300}>
@@ -63,7 +63,7 @@ const Private = () => {
           </TransitionGroup>
         ) : (
           <>
-            <Contacts navVisible={navVisible} userData={userData} chat={chat} setChat={setChat} />
+            <Contacts setNavVisible={setNavVisible} userData={userData} chat={chat} setChat={setChat} />
             <Chat userData={userData} chat={chat} />
           </>
         )}
