@@ -3,6 +3,7 @@ import { auth, createPrivateChat, searchUser } from "./services/firebaseConfig";
 import { fetchChats } from "./services/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import defaultSrc from "../assets/images/default-profile-pic.png";
+import { isMobile } from 'react-device-detect';
 
 interface ChatInfo {
   amigoNome: string;
@@ -20,7 +21,9 @@ const ModelContats: React.FC<{
   const isSelected = chatInfo.chatRoom === selectedChatIndex;
   const handleChatClick = () => {
     setChat(chatInfo.chatRoom);
-    setNavVisible(false);
+    if(isMobile){
+      setNavVisible(false);
+    };
   };
   return (
     <li
