@@ -15,9 +15,9 @@ const NavBar = ({ isSelected, navVisible, setNavVisible }: any) => {
         onClick={() => setNavVisible(!navVisible)}
       >
         {navVisible ? (
-          <FontAwesomeIcon icon="arrow-left" className="dark:text-white text-sky-700 text-3xl bg-gray-800 p-3 rounded-xl" />
+          <FontAwesomeIcon icon="arrow-left" className="text-white text-3xl bg-sky-900 dark:bg-gray-800 p-3 rounded-xl" />
         ) : (
-          <FontAwesomeIcon icon="bars" className="dark:text-white text-sky-700 text-3xl bg-gray-800 p-3 rounded-xl" />
+          <FontAwesomeIcon icon="bars" className="text-white text-3xl bg-sky-900 dark:bg-gray-800 p-3 rounded-xl" />
         )}
       </button>
 
